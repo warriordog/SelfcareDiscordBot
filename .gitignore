@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Jetbrains IDEs
 /.idea/
+
+# Environment-specific config files
+appsettings.*.json

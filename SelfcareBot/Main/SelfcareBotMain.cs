@@ -18,12 +18,12 @@ namespace SelfcareBot.Main
     {
         private readonly DiscordClient _discord;
         
-        public SelfcareBotMain(IServiceProvider serviceProvider, IOptions<BotLoggingOptions> botLoggingOptions)
+        public SelfcareBotMain(IServiceProvider serviceProvider, IOptions<BotLoggingOptions> botLoggingOptions, IOptions<DiscordConnectionOptions> connectionOptions)
         {
             // Create discord client
             _discord = new DiscordClient(new DiscordConfiguration()
             {
-                Token = "Nzk3Mjc2MzE5OTIxODY0NzA0.X_kHbw.zlMRatfFYPnX05CylmQGDlmqto4",
+                Token = connectionOptions.Value.Token,
                 TokenType = TokenType.Bot,
                 MinimumLogLevel = botLoggingOptions.Value.LogLevel
             });

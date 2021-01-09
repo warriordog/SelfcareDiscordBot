@@ -1,15 +1,37 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
+        <Nullable>enable</Nullable>
+        <Title>Selfcare Bot</Title>
+        <Authors>Christopher Koehler</Authors>
+        <Description>Discord bot that provides self-care reminders</Description>
+        <Copyright>Christopher Koehler 2021</Copyright>
+        <PackageProjectUrl>https://github.com/warriordog/discord-selfcare-bot</PackageProjectUrl>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/warriordog/discord-selfcare-bot/main/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/warriordog/discord-selfcare-bot</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+      <UserSecretsId>b70001bd-76a8-4d2f-b0f1-32db050fd272</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="DSharpPlus" Version="4.0.0-rc1" />
       <PackageReference Include="DSharpPlus.CommandsNext" Version="4.0.0-rc1" />
       <PackageReference Include="DSharpPlus.Interactivity" Version="4.0.0-rc1" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="obj\**" />
     </ItemGroup>
 
 </Project>

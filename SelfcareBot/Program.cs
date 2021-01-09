@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SelfcareBot.Config;
@@ -24,15 +27,16 @@ namespace SelfcareBot
         private static IHost CreateHost(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureServices((_, services) =>
+                .ConfigureServices((ctx, services) =>
                 {
+                    // Inject config
+                    services.Configure<DiscordConnectionOptions>(ctx.Configuration.GetSection(key: nameof(DiscordConnectionOptions)));
+                    services.Configure<BotLoggingOptions>(ctx.Configuration.GetSection(key: nameof(BotLoggingOptions)));
+                    
                     // Inject services
                     services
                         .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
                         .AddHostedService<SelfcareBotMain>();
-                    
-                    // Inject config
-                    services.AddOptions<BotLoggingOptions>();
                 })
                 .Build();
         }

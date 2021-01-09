@@ -4,6 +4,6 @@ namespace SelfcareBot.Config
 {
     public class BotLoggingOptions
     {
-        public LogLevel LogLevel { get; set; }
+        public LogLevel LogLevel { get; set; } = LogLevel.Information;
     }
 }
