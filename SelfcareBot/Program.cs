@@ -31,12 +31,12 @@ namespace SelfcareBot
                 {
                     // Inject config
                     services.Configure<DiscordConnectionOptions>(ctx.Configuration.GetSection(key: nameof(DiscordConnectionOptions)));
-                    services.Configure<BotLoggingOptions>(ctx.Configuration.GetSection(key: nameof(BotLoggingOptions)));
                     
                     // Inject services
                     services
                         .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
-                        .AddHostedService<SelfcareBotMain>();
+                        .AddHostedService<SelfcareBotMain>()
+                    ;
                 })
                 .Build();
         }

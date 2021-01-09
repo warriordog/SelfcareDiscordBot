@@ -18,14 +18,15 @@ namespace SelfcareBot.Main
     {
         private readonly DiscordClient _discord;
         
-        public SelfcareBotMain(IServiceProvider serviceProvider, IOptions<BotLoggingOptions> botLoggingOptions, IOptions<DiscordConnectionOptions> connectionOptions)
+        public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<DiscordConnectionOptions> connectionOptions)
         {
             // Create discord client
             _discord = new DiscordClient(new DiscordConfiguration()
             {
                 Token = connectionOptions.Value.Token,
                 TokenType = TokenType.Bot,
-                MinimumLogLevel = botLoggingOptions.Value.LogLevel
+                LoggerFactory = loggerFactory
+                //MinimumLogLevel = botLoggingOptions.Value.LogLevel
             });
             
             // Enable interactivity

@@ -32,6 +32,9 @@
 
     <ItemGroup>
       <None Remove="obj\**" />
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

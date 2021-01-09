@@ -51,5 +51,7 @@ namespace SelfcareBot.Services
         public int Score { get; init; }
         
         public int Rank { get; init; }
+
+        public override string ToString() => $"{{\"UserId\"=\"{UserId.ToString()}\", \"Score\"=\"{Score.ToString()}\", \"Rank\"=\"{Rank.ToString()}\"}}";
     }
 }
