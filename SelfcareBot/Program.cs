@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SelfcareBot.Main;
 using SelfcareBot.Services;
 
@@ -6,16 +8,26 @@ namespace SelfcareBot
 {
     class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            // Init services
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>();
-            var serviceProvider = serviceCollection.BuildServiceProvider();
+            // Create environment
+            using var host = CreateHost(args);
+            
+            // Start host
+            await host.StartAsync();
 
-            // Run bot
-            var main = new SelfcareBotMain(serviceProvider);
-            main.RunBot().GetAwaiter().GetResult();
+            // Wait for graceful shutdown
+            await host.WaitForShutdownAsync();
+        }
+        
+        private static IHost CreateHost(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureServices((_, services) => services
+                    .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
+                    .AddHostedService<SelfcareBotMain>()
+                )
+                .Build();
         }
     }
 }
