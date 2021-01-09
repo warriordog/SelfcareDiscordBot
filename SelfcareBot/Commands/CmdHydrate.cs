@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,8 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SelfcareBot.Config;
 using SelfcareBot.Services;
 
 namespace SelfcareBot.Commands
@@ -16,11 +17,13 @@ namespace SelfcareBot.Commands
     {
         private readonly IHydrationLeaderboard _hydrationLeaderboard;
         private readonly ILogger<CmdHydrate> _logger;
+        private readonly HydrationOptions _hydrationOptions;
 
-        public CmdHydrate(IHydrationLeaderboard hydrationLeaderboard, ILogger<CmdHydrate> logger)
+        public CmdHydrate(IHydrationLeaderboard hydrationLeaderboard, ILogger<CmdHydrate> logger, IOptions<HydrationOptions> hydrationOptions)
         {
             _hydrationLeaderboard = hydrationLeaderboard;
             _logger = logger;
+            _hydrationOptions = hydrationOptions.Value;
         }
 
         [Command("hydrate")]
@@ -37,12 +40,11 @@ namespace SelfcareBot.Commands
                 var hydrateMessage = await ctx.RespondAsync("Its time to hydrate! Drink some water and then click the reaction below.");
             
                 // Attach water emoji
-                var waterEmoji = DiscordEmoji.FromName(ctx.Client, ":droplet:");
+                var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
                 await hydrateMessage.CreateReactionAsync(waterEmoji);
 
                 // Wait for responses
-                var responseTime = new TimeSpan(0, 0, 5);
-                var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(responseTime))
+                var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(_hydrationOptions.HydrateRequestExpiresAfter))
                     .Where(reaction => reaction.Emoji.Equals(waterEmoji))
                     .SelectMany(reaction => reaction.Users)
                     .Where(user => !user.Equals(ctx.Client.CurrentUser))
@@ -52,7 +54,10 @@ namespace SelfcareBot.Commands
                 _logger.LogDebug("{count} users responded: [{users}]", usersWhoResponded.Count.ToString(), usersWhoResponded);
                 
                 // Remove message
-                await hydrateMessage.DeleteAsync();
+                if (_hydrationOptions.DeleteExpiredHydrationRequests)
+                {
+                    await hydrateMessage.DeleteAsync();   
+                }
             
                 // Award hydration points
                 foreach (var user in usersWhoResponded)
@@ -79,7 +84,7 @@ namespace SelfcareBot.Commands
                 };
 
                 // Append leaderboard rows to message
-                var leaderboard = (await _hydrationLeaderboard.GetLeaderboard()).ToArray();
+                var leaderboard = (await _hydrationLeaderboard.GetLeaderboard(_hydrationOptions.LeaderboardSize)).ToArray();
                 if (leaderboard.Any())
                 {
                     foreach (var entry in leaderboard)

@@ -31,6 +31,7 @@ namespace SelfcareBot
                 {
                     // Inject config
                     services.Configure<DiscordConnectionOptions>(ctx.Configuration.GetSection(key: nameof(DiscordConnectionOptions)));
+                    services.Configure<HydrationOptions>(ctx.Configuration.GetSection(key: nameof(HydrationOptions)));
                     
                     // Inject services
                     services
