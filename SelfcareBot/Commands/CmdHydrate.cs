@@ -29,9 +29,9 @@ namespace SelfcareBot.Commands
         public async Task HydrateCommand(CommandContext ctx)
         {
             // Setup logging context
-            using (_logger.BeginScope("CmdHydrate.HydrateCommand"))
+            using (_logger.BeginScope($"CmdHydrate.HydrateCommand@{ctx.Message.Id.ToString()}"))
             {
-                _logger.LogInformation("Requested by [{user}]", ctx.User);
+                _logger.LogDebug("Requested by [{user}]", ctx.User);
                 
                 // Send hydration message
                 var hydrateMessage = await ctx.RespondAsync("Its time to hydrate! Drink some water and then click the reaction below.");
@@ -68,9 +68,9 @@ namespace SelfcareBot.Commands
         public async Task ScoresCommand(CommandContext ctx)
         {
             // Setup logging context
-            using (_logger.BeginScope("CmdHydrate.ScoresCommand"))
+            using (_logger.BeginScope($"CmdHydrate.ScoresCommand@{ctx.Message.Id.ToString()}"))
             {
-                _logger.LogInformation("Requested by [{user}]", ctx.User);
+                _logger.LogDebug("Requested by [{user}]", ctx.User);
 
                 // Setup leaderboard message
                 var leaderboardLines = new List<string>
