@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfcareBot", "SelfcareBot\SelfcareBot.csproj", "{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
