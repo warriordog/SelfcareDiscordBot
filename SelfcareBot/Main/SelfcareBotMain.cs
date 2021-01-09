@@ -9,6 +9,8 @@ using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SelfcareBot.Config;
 
 namespace SelfcareBot.Main
 {
@@ -16,13 +18,14 @@ namespace SelfcareBot.Main
     {
         private readonly DiscordClient _discord;
         
-        public SelfcareBotMain(IServiceProvider serviceProvider)
+        public SelfcareBotMain(IServiceProvider serviceProvider, IOptions<BotLoggingOptions> botLoggingOptions)
         {
             // Create discord client
             _discord = new DiscordClient(new DiscordConfiguration()
             {
                 Token = "Nzk3Mjc2MzE5OTIxODY0NzA0.X_kHbw.zlMRatfFYPnX05CylmQGDlmqto4",
-                TokenType = TokenType.Bot
+                TokenType = TokenType.Bot,
+                MinimumLogLevel = botLoggingOptions.Value.LogLevel
             });
             
             // Enable interactivity

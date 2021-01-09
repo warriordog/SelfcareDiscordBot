@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SelfcareBot.Config;
 using SelfcareBot.Main;
 using SelfcareBot.Services;
 
@@ -23,10 +24,16 @@ namespace SelfcareBot
         private static IHost CreateHost(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureServices((_, services) => services
-                    .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
-                    .AddHostedService<SelfcareBotMain>()
-                )
+                .ConfigureServices((_, services) =>
+                {
+                    // Inject services
+                    services
+                        .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
+                        .AddHostedService<SelfcareBotMain>();
+                    
+                    // Inject config
+                    services.AddOptions<BotLoggingOptions>();
+                })
                 .Build();
         }
     }
