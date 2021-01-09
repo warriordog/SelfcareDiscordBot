@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SelfcareBot.Config;
@@ -30,8 +27,12 @@ namespace SelfcareBot
                 .ConfigureServices((ctx, services) =>
                 {
                     // Inject config
-                    services.Configure<DiscordConnectionOptions>(ctx.Configuration.GetSection(key: nameof(DiscordConnectionOptions)));
-                    services.Configure<HydrationOptions>(ctx.Configuration.GetSection(key: nameof(HydrationOptions)));
+                    services.AddOptions<HydrationOptions>()
+                        .Bind(ctx.Configuration.GetSection(key: nameof(HydrationOptions)))
+                        .ValidateDataAnnotations();
+                    services.AddOptions<BotOptions>()
+                        .Bind(ctx.Configuration.GetSection(key: nameof(BotOptions)))
+                        .ValidateDataAnnotations();
                     
                     // Inject services
                     services
