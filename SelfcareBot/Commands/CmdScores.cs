@@ -66,9 +66,6 @@ namespace SelfcareBot.Commands
                 var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
                 var leaderboardMessage = $"{Formatter.Underline($"{waterEmoji}Hydration Leaderboard{waterEmoji}")}\n{leaderboardText}";
                 await ctx.RespondAsync(leaderboardMessage);
-                
-                // Debug log message
-                _logger.LogDebug("Sent message \"{message}\"", leaderboardMessage);
             }
         }
 
