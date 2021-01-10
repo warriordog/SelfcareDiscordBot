@@ -35,10 +35,10 @@ namespace SelfcareBot
                         .ValidateDataAnnotations();
                     
                     // Inject services
-                    services
-                        .AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>()
-                        .AddHostedService<SelfcareBotMain>()
-                    ;
+                    services.AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>();
+                    
+                    // Inject main app logic
+                    services.AddHostedService<SelfcareBotMain>();
                 })
                 .Build();
         }
