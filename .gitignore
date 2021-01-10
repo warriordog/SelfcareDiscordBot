@@ -351,3 +351,6 @@ MigrationBackup/
 
 # Environment-specific config files
 appsettings.*.json
+
+# DB Migration databases
+/DataLayer/selfcare.db

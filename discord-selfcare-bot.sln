@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfcareBot", "SelfcareBot\SelfcareBot.csproj", "{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{42E4CE40-7543-4D05-BE0A-D4E6FFB9F3DE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8590680E-F1EC-4A4B-A8B1-03AFE3A2F232}.Release|Any CPU.Build.0 = Release|Any CPU
+		{42E4CE40-7543-4D05-BE0A-D4E6FFB9F3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42E4CE40-7543-4D05-BE0A-D4E6FFB9F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42E4CE40-7543-4D05-BE0A-D4E6FFB9F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42E4CE40-7543-4D05-BE0A-D4E6FFB9F3DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

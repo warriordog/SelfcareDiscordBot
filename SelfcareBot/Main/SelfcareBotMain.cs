@@ -11,15 +11,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SelfcareBot.Config;
+using SelfcareBot.DataLayer.context;
 
 namespace SelfcareBot.Main
 {
-    public class SelfcareBotMain : IHostedService
+    public class SelfcareBotMain
     {
         private readonly DiscordClient _discord;
+        private readonly ISelfcareDbContext _selfcareDb;
         
-        public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<BotOptions> botOptions)
+        public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<BotOptions> botOptions, ISelfcareDbContext selfcareDb)
         {
+            _selfcareDb = selfcareDb;
+            
             // Create discord client
             _discord = new DiscordClient(new DiscordConfiguration()
             {
@@ -43,12 +47,14 @@ namespace SelfcareBot.Main
             .RegisterCommands(Assembly.GetExecutingAssembly());
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task RunAsync()
         {
-            return _discord.ConnectAsync();
+            
+            await _selfcareDb.MigrateDbAsync();
+            await _discord.ConnectAsync();
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public Task StopAsync()
         {
             return _discord.DisconnectAsync();
         }
