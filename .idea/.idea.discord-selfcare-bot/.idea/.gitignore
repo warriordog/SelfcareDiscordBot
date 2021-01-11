@@ -7,7 +7,7 @@
 /projectSettingsUpdater.xml
 /.idea.discord-selfcare-bot.iml
 # Datasource local storage ignored files
-/.idea.discord-selfcare-bot/.idea/dataSources/
+/dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
