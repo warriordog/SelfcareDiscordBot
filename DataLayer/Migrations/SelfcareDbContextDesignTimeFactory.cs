@@ -6,12 +6,14 @@ namespace SelfcareBot.DataLayer.migrations
 {
     public class SelfcareDbContextDesignTimeFactory : IDesignTimeDbContextFactory<SelfcareDbContext>
     {
-        public SelfcareDbContext CreateDbContext(string[] args)
-        {
-            return new(new OptionsWrapper<SelfcareDatabaseOptions>(new SelfcareDatabaseOptions()
-            {
-                ConnectionString = "DataSource=selfcare.db"
-            }));
-        }
+        public SelfcareDbContext CreateDbContext(string[] args) =>
+            new(
+                new OptionsWrapper<SelfcareDatabaseOptions>(
+                    new SelfcareDatabaseOptions
+                    {
+                        ConnectionString = "DataSource=selfcare.db"
+                    }
+                )
+            );
     }
 }

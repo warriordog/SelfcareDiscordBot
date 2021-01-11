@@ -7,55 +7,47 @@ namespace SelfcareBot.DataLayer.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "KnownUsers",
-                columns: table => new
+                "KnownUsers",
+                table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>("INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    DiscordId = table.Column<ulong>(type: "INTEGER", nullable: false),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false)
+                    DiscordId = table.Column<ulong>("INTEGER", nullable: false),
+                    Username = table.Column<string>("text",      nullable: false),
+                    Discriminator = table.Column<string>("text", nullable: false)
                 },
                 constraints: table =>
-                {
-                    table.PrimaryKey("PK_KnownUsers", x => x.Id);
-                    table.UniqueConstraint("AK_KnownUsers_DiscordId", x => x.DiscordId);
-                });
+                             {
+                                 table.PrimaryKey("PK_KnownUsers", x => x.Id);
+                                 table.UniqueConstraint("AK_KnownUsers_DiscordId", x => x.DiscordId);
+                             }
+            );
 
             migrationBuilder.CreateTable(
-                name: "UserScores",
-                columns: table => new
+                "UserScores",
+                table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>("INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    KnownUserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Category = table.Column<string>(type: "text", nullable: false),
-                    Score = table.Column<int>(type: "INTEGER", nullable: false)
+                    KnownUserId = table.Column<int>("INTEGER", nullable: false),
+                    Category = table.Column<string>("text", nullable: false),
+                    Score = table.Column<int>("INTEGER", nullable: false)
                 },
                 constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserScores", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserScores_KnownUsers_KnownUserId",
-                        column: x => x.KnownUserId,
-                        principalTable: "KnownUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                             {
+                                 table.PrimaryKey("PK_UserScores", x => x.Id);
+                                 table.ForeignKey("FK_UserScores_KnownUsers_KnownUserId", x => x.KnownUserId, "KnownUsers", "Id", onDelete: ReferentialAction.Cascade);
+                             }
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserScores_KnownUserId",
-                table: "UserScores",
-                column: "KnownUserId");
+            migrationBuilder.CreateIndex("IX_UserScores_KnownUserId", "UserScores", "KnownUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "UserScores");
+            migrationBuilder.DropTable("UserScores");
 
-            migrationBuilder.DropTable(
-                name: "KnownUsers");
+            migrationBuilder.DropTable("KnownUsers");
         }
     }
 }

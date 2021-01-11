@@ -10,7 +10,7 @@ namespace SelfcareBot.DataLayer.context
     {
         public DbSet<UserScore> UserScores { get; }
         public DbSet<KnownUser> KnownUsers { get; }
-        
+
         public Task MigrateAsync();
         public Task<int> SaveChangesAsync();
         public Task<IDbContextTransaction> BeginTransactionAsync();

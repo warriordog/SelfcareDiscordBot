@@ -9,7 +9,7 @@ namespace SelfcareBot.DataLayer.entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
+
         [Required]
         public ulong DiscordId { get; set; }
 

@@ -8,7 +8,7 @@ namespace SelfcareBot.Config
     {
         [Required]
         public IList<string> CommandPrefixes { get; set; } = new List<string>();
-        
+
         [Required]
         [AllowNull]
         public string DiscordToken { get; set; }

@@ -16,8 +16,8 @@ namespace SelfcareBot.Commands
     public class CmdHydrate : BaseCommandModule
     {
         private readonly IHydrationLeaderboard _hydrationLeaderboard;
-        private readonly ILogger<CmdHydrate> _logger;
-        private readonly HydrationOptions _hydrationOptions;
+        private readonly HydrationOptions      _hydrationOptions;
+        private readonly ILogger<CmdHydrate>   _logger;
 
         public CmdHydrate(IHydrationLeaderboard hydrationLeaderboard, ILogger<CmdHydrate> logger, IOptions<HydrationOptions> hydrationOptions)
         {
@@ -37,34 +37,33 @@ namespace SelfcareBot.Commands
                 try
                 {
                     _logger.LogDebug("Requested by [{user}]", ctx.User);
-                
+
                     // Send hydration message
                     var hydrateMessage = await ctx.RespondAsync("Its time to hydrate! Drink some water and then click the reaction below.");
-            
+
                     // Attach water emoji
                     var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
                     await hydrateMessage.CreateReactionAsync(waterEmoji);
 
                     // Wait for responses
-                    var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(_hydrationOptions.HydrateRequestExpiresAfter))
-                        .Where(reaction => reaction.Emoji.Equals(waterEmoji))
+                    var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(_hydrationOptions.HydrateRequestExpiresAfter)).Where(reaction => reaction.Emoji.Equals(waterEmoji))
                         .SelectMany(reaction => reaction.Users)
                         .Where(user => !user.Equals(ctx.Client.CurrentUser))
                         .ToList();
 
                     // Debug log responding users
                     _logger.LogDebug("{count} users responded: [{users}]", usersWhoResponded.Count.ToString(), usersWhoResponded);
-                
+
                     // Remove message
                     if (_hydrationOptions.DeleteExpiredHydrationRequests)
                     {
-                        await hydrateMessage.DeleteAsync();   
+                        await hydrateMessage.DeleteAsync();
                     }
-            
+
                     // Award hydration points
                     foreach (var user in usersWhoResponded)
                     {
-                        await _hydrationLeaderboard.AwardPoints(user);   
+                        await _hydrationLeaderboard.AwardPoints(user);
                     }
                 }
                 catch (Exception ex)

@@ -14,39 +14,43 @@ namespace SelfcareBot
         {
             // Create environment
             using var host = CreateHost(args);
-            
+
             // Run application
             await host.RunAsync();
         }
-        
+
         private static IHost CreateHost(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .ConfigureServices((ctx, services) =>
-                {
-                    // Inject config
-                    services.AddOptions<HydrationOptions>()
-                        .Bind(ctx.Configuration.GetSection(key: nameof(HydrationOptions)))
-                        .ValidateDataAnnotations();
-                    services.AddOptions<BotOptions>()
-                        .Bind(ctx.Configuration.GetSection(key: nameof(BotOptions)))
-                        .ValidateDataAnnotations();
-                    services.AddOptions<SelfcareDatabaseOptions>()
-                        .Bind(ctx.Configuration.GetSection(key: nameof(SelfcareDatabaseOptions)))
-                        .ValidateDataAnnotations();
-                    
-                    // Inject database
-                    services.AddDbContext<SelfcareDbContext>();
-                    services.AddScoped<ISelfcareDbContext>(provider => provider.GetRequiredService<SelfcareDbContext>());
-                    
-                    // Inject services
-                    services.AddScoped<IUserService, UserService>();
-                    services.AddScoped<IHydrationLeaderboard, HydrationLeaderboard>();
-                    
-                    // Inject main app logic
-                    services.AddScoped<SelfcareBotMain>();
-                    services.AddHostedService<SelfcareBotService>();
-                })
+                .ConfigureServices(
+                    (ctx, services) =>
+                    {
+                        // Inject config
+                        services.AddOptions<HydrationOptions>()
+                            .Bind(ctx.Configuration.GetSection(nameof(HydrationOptions)))
+                            .ValidateDataAnnotations();
+
+                        services.AddOptions<BotOptions>()
+                            .Bind(ctx.Configuration.GetSection(nameof(BotOptions)))
+                            .ValidateDataAnnotations();
+
+                        services.AddOptions<SelfcareDatabaseOptions>()
+                            .Bind(ctx.Configuration.GetSection(nameof(SelfcareDatabaseOptions)))
+                            .ValidateDataAnnotations();
+
+                        // Inject database
+                        services.AddDbContext<SelfcareDbContext>();
+                        services.AddScoped<ISelfcareDbContext>(provider => provider.GetRequiredService<SelfcareDbContext>());
+
+                        // Inject services
+                        services.AddScoped<IUserService, UserService>();
+                        services.AddScoped<IHydrationLeaderboard, HydrationLeaderboard>();
+
+                        // Inject main app logic
+                        services.AddScoped<SelfcareBotMain>();
+                        services.AddHostedService<SelfcareBotService>();
+                    }
+                )
                 .Build();
         }
     }

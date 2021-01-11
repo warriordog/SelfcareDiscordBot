@@ -8,15 +8,15 @@ namespace SelfcareBot.DataLayer.entities
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        
+
         [Required]
         [AllowNull]
         public virtual KnownUser KnownUser { get; set; }
-        
+
         [Required]
         [Column(TypeName = "text")]
         public string Category { get; set; }
-        
+
         [Required]
         public int Score { get; set; }
     }

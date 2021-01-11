@@ -8,16 +8,16 @@ namespace SelfcareBot.DataLayer.context
 {
     public class SelfcareDbContext : DbContext, ISelfcareDbContext
     {
-        public DbSet<UserScore> UserScores { get; set; }
-        public DbSet<KnownUser> KnownUsers { get; set; }
-
         private readonly SelfcareDatabaseOptions _options;
-        
+
         public SelfcareDbContext(IOptions<SelfcareDatabaseOptions> options)
         {
             _options = options.Value;
         }
-        
+
+        public DbSet<UserScore> UserScores { get; set; }
+        public DbSet<KnownUser> KnownUsers { get; set; }
+
         public Task MigrateAsync() => Database.MigrateAsync();
 
         public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
@@ -29,10 +29,9 @@ namespace SelfcareBot.DataLayer.context
             optionsBuilder
                 // Automatically resolve navigation properties on access
                 .UseLazyLoadingProxies()
-                
+
                 // Connect to local SQLite DB
-                .UseSqlite(_options.ConnectionString)
-            ;
+                .UseSqlite(_options.ConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

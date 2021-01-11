@@ -15,36 +15,42 @@ namespace SelfcareBot.Main
 {
     public class SelfcareBotMain
     {
-        private readonly DiscordClient _discord;
-        private readonly ISelfcareDbContext _selfcareDb;
+        private readonly DiscordClient            _discord;
         private readonly ILogger<SelfcareBotMain> _logger;
-        
+        private readonly ISelfcareDbContext       _selfcareDb;
+
         public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<BotOptions> botOptions, ISelfcareDbContext selfcareDb, ILogger<SelfcareBotMain> logger)
         {
             _selfcareDb = selfcareDb;
             _logger = logger;
 
             // Create discord client
-            _discord = new DiscordClient(new DiscordConfiguration()
-            {
-                Token = botOptions.Value.DiscordToken,
-                TokenType = TokenType.Bot,
-                LoggerFactory = loggerFactory
-            });
-        
+            _discord = new DiscordClient(
+                new DiscordConfiguration
+                {
+                    Token = botOptions.Value.DiscordToken,
+                    TokenType = TokenType.Bot,
+                    LoggerFactory = loggerFactory
+                }
+            );
+
             // Enable interactivity
-            _discord.UseInteractivity(new InteractivityConfiguration() 
-            { 
-                PollBehaviour = PollBehaviour.KeepEmojis
-            });
-        
+            _discord.UseInteractivity(
+                new InteractivityConfiguration
+                {
+                    PollBehaviour = PollBehaviour.KeepEmojis
+                }
+            );
+
             // Register commands
-            _discord.UseCommandsNext(new CommandsNextConfiguration()
-            { 
-                StringPrefixes = botOptions.Value.CommandPrefixes,
-                Services = serviceProvider
-            })
-            .RegisterCommands(Assembly.GetExecutingAssembly());
+            _discord.UseCommandsNext(
+                    new CommandsNextConfiguration
+                    {
+                        StringPrefixes = botOptions.Value.CommandPrefixes,
+                        Services = serviceProvider
+                    }
+                )
+                .RegisterCommands(Assembly.GetExecutingAssembly());
         }
 
         public async Task StartAsync()
@@ -56,7 +62,7 @@ namespace SelfcareBot.Main
 
         public Task StopAsync()
         {
-            _logger.LogInformation($"SelfcareBot stopping");
+            _logger.LogInformation("SelfcareBot stopping");
             return _discord.DisconnectAsync();
         }
     }
