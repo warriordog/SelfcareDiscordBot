@@ -1,21 +1,15 @@
 using System;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Enums;
 using DSharpPlus.Interactivity.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SelfcareBot.Commands;
 using SelfcareBot.Config;
 using SelfcareBot.DataLayer.context;
-using SelfcareBot.Services;
 
 namespace SelfcareBot.Main
 {
