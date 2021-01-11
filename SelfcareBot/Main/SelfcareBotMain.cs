@@ -23,12 +23,12 @@ namespace SelfcareBot.Main
     {
         private readonly DiscordClient _discord;
         private readonly ISelfcareDbContext _selfcareDb;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger<SelfcareBotMain> _logger;
         
-        public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<BotOptions> botOptions, ISelfcareDbContext selfcareDb, IServiceScopeFactory serviceScopeFactory)
+        public SelfcareBotMain(IServiceProvider serviceProvider, ILoggerFactory loggerFactory, IOptions<BotOptions> botOptions, ISelfcareDbContext selfcareDb, ILogger<SelfcareBotMain> logger)
         {
             _selfcareDb = selfcareDb;
-            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
 
             // Create discord client
             _discord = new DiscordClient(new DiscordConfiguration()
@@ -55,12 +55,14 @@ namespace SelfcareBot.Main
 
         public async Task StartAsync()
         {
+            _logger.LogInformation($"SelfcareBot {GetType().Assembly.GetName().Version} starting");
             await _selfcareDb.MigrateAsync();
             await _discord.ConnectAsync();
         }
 
         public Task StopAsync()
         {
+            _logger.LogInformation($"SelfcareBot stopping");
             return _discord.DisconnectAsync();
         }
     }

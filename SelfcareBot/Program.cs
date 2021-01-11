@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SelfcareBot.Config;
@@ -11,17 +8,12 @@ using SelfcareBot.Services;
 
 namespace SelfcareBot
 {
-    class Program
+    internal static class Program
     {
         public static async Task Main(string[] args)
         {
             // Create environment
             using var host = CreateHost(args);
-
-/*
-            var db = host.Services.CreateScope().ServiceProvider.GetRequiredService<ISelfcareDbContext>();
-            await db.MigrateAsync();
-            Console.WriteLine(await db.KnownUsers.ToListAsync());*/
             
             // Run application
             await host.RunAsync();
@@ -48,6 +40,7 @@ namespace SelfcareBot
                     services.AddScoped<ISelfcareDbContext>(provider => provider.GetRequiredService<SelfcareDbContext>());
                     
                     // Inject services
+                    services.AddScoped<IUserService, UserService>();
                     services.AddScoped<IHydrationLeaderboard, HydrationLeaderboard>();
                     
                     // Inject main app logic

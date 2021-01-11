@@ -20,10 +20,12 @@ namespace SelfcareBot.Services
         private const string HydrationCategory = "hydration";
         
         private readonly ISelfcareDbContext _selfcareDb;
+        private readonly IUserService _userService;
 
-        public HydrationLeaderboard(ISelfcareDbContext selfcareDb)
+        public HydrationLeaderboard(ISelfcareDbContext selfcareDb, IUserService userService)
         {
             _selfcareDb = selfcareDb;
+            _userService = userService;
         }
 
         public async Task<List<HydrationLeaderboardEntry>> GetLeaderboard(int top = 3)
@@ -47,51 +49,30 @@ namespace SelfcareBot.Services
 
         public async Task AwardPoints(DiscordUser discordUser, int points = 1)
         {
-            // Start DB transaction
-            await using var transaction = await _selfcareDb.BeginTransactionAsync();
-            
-            // Get user (if present)
-            var knownUser = await _selfcareDb.KnownUsers
-                .Where(kn => kn.DiscordId == discordUser.Id)
-                .FirstOrDefaultAsync();
-            
-            // Record user if not present
-            if (knownUser == null)
-            {
-                knownUser = new KnownUser()
-                {
-                    DiscordId = discordUser.Id,
-                    Username = discordUser.Username,
-                    Discriminator = discordUser.Discriminator
-                };
-                _selfcareDb.KnownUsers.Add(knownUser);
-            }
+            // Get user
+            var knownUser = await _userService.GetOrCreateKnownUserForDiscordUser(discordUser);
             
             // Get current score (if present)
             var userScore = await _selfcareDb.UserScores
                 .Where(us => us.KnownUser.Id == knownUser.Id)
                 .FirstOrDefaultAsync();
 
-            // If user already has a score, then update
-            if (userScore != null)
-            {
-                userScore.Score++;
-                _selfcareDb.UserScores.Update(userScore);
-            }
-            // If user does not have a score, then insert
-            else
+            // If user does not have a score, then create it
+            if (userScore == null)
             {
                 userScore = new UserScore()
                 {
                     KnownUser = knownUser,
                     Category = HydrationCategory,
-                    Score = points
+                    Score = 0
                 };
                 _selfcareDb.UserScores.Add(userScore);
             }
+        
+            // give points
+            userScore.Score += points;
 
             // Save changes
-            await transaction.CommitAsync();
             await _selfcareDb.SaveChangesAsync();
         }
     }

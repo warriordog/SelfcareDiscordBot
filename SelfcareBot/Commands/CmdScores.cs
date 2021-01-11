@@ -65,55 +65,6 @@ namespace SelfcareBot.Commands
                 var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
                 var leaderboardMessage = $"{Formatter.Underline($"{waterEmoji}Hydration Leaderboard{waterEmoji}")}\n{leaderboardText}";
                 await ctx.RespondAsync(leaderboardMessage);
-                
-                _logger.LogDebug("Scores done.");
-            }
-        }
-
-        public async Task TmpScoresCommand(DiscordClient client)
-        {
-            // Setup logging context
-            using (_logger.BeginScope($"CmdScores.ScoresCommand@tmp"))
-            {
-                try
-                {
-                    _logger.LogDebug("Requested by [tmp]");
-                
-                    // Create leaderboard text
-                    var leaderboardLines = new List<string>();
-                    var leaderboard = await _hydrationLeaderboard.GetLeaderboard(_hydrationOptions.LeaderboardSize);
-                    _logger.LogDebug("Got leaderboard");
-                    if (leaderboard.Any())
-                    {
-                        var maxRankDecimals = (int) Math.Floor(Math.Log10(leaderboard.Count)) + 1;
-                        var maxScoreDecimals = (int) Math.Floor(Math.Log10(leaderboard[0].Score)) + 1;
-                        leaderboardLines.AddRange(leaderboard.Select(entry =>
-                            $"#{entry.Rank.ToString().PadLeft(maxRankDecimals)}:\t{entry.Score.ToString().PadLeft(maxScoreDecimals)}\t{entry.Username}#{entry.Discriminator}")
-                        );
-                    }
-                    else
-                    {
-                        leaderboardLines.Add($"No results! Use the hydrate command to call for hydration.");
-                    }
-
-                    // Convert to inline code style
-                    var leaderboardText = Formatter.BlockCode(string.Join("\n", leaderboardLines));
-                
-                    // Debug log leaderboard
-                    _logger.LogDebug("leaderboard entries: [{leaderboard}]", leaderboard);
-
-                    // Send message to channel
-                    var waterEmoji = DiscordEmoji.FromName(client, _hydrationOptions.WaterEmojiName);
-                    var leaderboardMessage = $"{Formatter.Underline($"{waterEmoji}Hydration Leaderboard{waterEmoji}")}\n{leaderboardText}";
-                    //await ctx.RespondAsync(leaderboardMessage);
-                    Console.WriteLine(leaderboardMessage);
-                
-                    _logger.LogDebug("Scores done.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Uncaught exception");
-                }
             }
         }
     }
