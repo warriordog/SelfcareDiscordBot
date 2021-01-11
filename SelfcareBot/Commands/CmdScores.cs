@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -36,35 +35,41 @@ namespace SelfcareBot.Commands
             // Setup logging context
             using (_logger.BeginScope($"CmdScores.ScoresCommand@{ctx.Message.Id.ToString()}"))
             {
-                _logger.LogDebug("Requested by [{user}]", ctx.User);
-                
-                // Create leaderboard text
-                var leaderboardLines = new List<string>();
-                var leaderboard = await _hydrationLeaderboard.GetLeaderboard(_hydrationOptions.LeaderboardSize);
-                _logger.LogDebug("Got leaderboard");
-                if (leaderboard.Any())
+                try
                 {
-                    var maxRankDecimals = (int) Math.Floor(Math.Log10(leaderboard.Count)) + 1;
-                    var maxScoreDecimals = (int) Math.Floor(Math.Log10(leaderboard[0].Score)) + 1;
-                    leaderboardLines.AddRange(leaderboard.Select(entry =>
-                        $"#{entry.Rank.ToString().PadLeft(maxRankDecimals)}:\t{entry.Score.ToString().PadLeft(maxScoreDecimals)}\t{entry.Username}#{entry.Discriminator}")
-                    );
-                }
-                else
-                {
-                    leaderboardLines.Add($"No results! Use the hydrate command to call for hydration.");
-                }
-
-                // Convert to inline code style
-                var leaderboardText = Formatter.BlockCode(string.Join("\n", leaderboardLines));
+                    _logger.LogDebug("Requested by [{user}]", ctx.User);
                 
-                // Debug log leaderboard
-                _logger.LogDebug("leaderboard entries: [{leaderboard}]", leaderboard);
+                    // Create leaderboard text
+                    var leaderboardLines = new List<string>();
+                    var leaderboard = await _hydrationLeaderboard.GetLeaderboard(_hydrationOptions.LeaderboardSize);
+                    if (leaderboard.Any())
+                    {
+                        var maxRankDecimals = (int) Math.Floor(Math.Log10(leaderboard.Count)) + 1;
+                        var maxScoreDecimals = (int) Math.Floor(Math.Log10(leaderboard[0].Score)) + 1;
+                        leaderboardLines.AddRange(leaderboard.Select(entry =>
+                            $"#{entry.Rank.ToString().PadLeft(maxRankDecimals)}:\t{entry.Score.ToString().PadLeft(maxScoreDecimals)}\t{entry.Username}#{entry.Discriminator}")
+                        );
+                    }
+                    else
+                    {
+                        leaderboardLines.Add($"No results! Use the hydrate command to call for hydration.");
+                    }
 
-                // Send message to channel
-                var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
-                var leaderboardMessage = $"{Formatter.Underline($"{waterEmoji}Hydration Leaderboard{waterEmoji}")}\n{leaderboardText}";
-                await ctx.RespondAsync(leaderboardMessage);
+                    // Convert to inline code style
+                    var leaderboardText = Formatter.BlockCode(string.Join("\n", leaderboardLines));
+                
+                    // Debug log leaderboard
+                    _logger.LogDebug("leaderboard entries: [{leaderboard}]", leaderboard);
+
+                    // Send message to channel
+                    var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
+                    var leaderboardMessage = $"{Formatter.Underline($"{waterEmoji}Hydration Leaderboard{waterEmoji}")}\n{leaderboardText}";
+                    await ctx.RespondAsync(leaderboardMessage);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Uncaught exception");
+                }
             }
         }
     }
