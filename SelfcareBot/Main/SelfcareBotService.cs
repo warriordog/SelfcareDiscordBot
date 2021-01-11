@@ -15,7 +15,7 @@ namespace SelfcareBot.Main
             _selfcareBotMain = scope.ServiceProvider.GetRequiredService<SelfcareBotMain>();
         }
 
-        public Task StartAsync(CancellationToken _) => _selfcareBotMain.RunAsync();
+        public Task StartAsync(CancellationToken _) => _selfcareBotMain.StartAsync();
         public Task StopAsync(CancellationToken _) => _selfcareBotMain.StopAsync();
     }
 }

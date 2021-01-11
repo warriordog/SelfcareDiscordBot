@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Data;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
 using SelfcareBot.DataLayer.entities;
 
@@ -18,11 +20,12 @@ namespace SelfcareBot.DataLayer.context
             _options = options.Value;
         }
         
-        public Task MigrateDbAsync()
-        {
-            return Database.MigrateAsync();
-        }
-        
+        public Task MigrateAsync() => Database.MigrateAsync();
+
+        public Task<int> SaveChangesAsync() => base.SaveChangesAsync();
+
+        public Task<IDbContextTransaction> BeginTransactionAsync() => Database.BeginTransactionAsync();
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
@@ -32,6 +35,12 @@ namespace SelfcareBot.DataLayer.context
                 // Connect to local SQLite DB
                 .UseSqlite(_options.ConnectionString)
             ;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<KnownUser>()
+                .HasAlternateKey(kn => kn.DiscordId);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.CommandsNext;
@@ -11,6 +12,7 @@ using SelfcareBot.Services;
 
 namespace SelfcareBot.Commands
 {
+    [ModuleLifespan(ModuleLifespan.Transient)]
     public class CmdHydrate : BaseCommandModule
     {
         private readonly IHydrationLeaderboard _hydrationLeaderboard;
@@ -32,35 +34,42 @@ namespace SelfcareBot.Commands
             // Setup logging context
             using (_logger.BeginScope($"CmdHydrate.HydrateCommand@{ctx.Message.Id.ToString()}"))
             {
-                _logger.LogDebug("Requested by [{user}]", ctx.User);
-                
-                // Send hydration message
-                var hydrateMessage = await ctx.RespondAsync("Its time to hydrate! Drink some water and then click the reaction below.");
-            
-                // Attach water emoji
-                var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
-                await hydrateMessage.CreateReactionAsync(waterEmoji);
-
-                // Wait for responses
-                var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(_hydrationOptions.HydrateRequestExpiresAfter))
-                    .Where(reaction => reaction.Emoji.Equals(waterEmoji))
-                    .SelectMany(reaction => reaction.Users)
-                    .Where(user => !user.Equals(ctx.Client.CurrentUser))
-                    .ToList();
-
-                // Debug log responding users
-                _logger.LogDebug("{count} users responded: [{users}]", usersWhoResponded.Count.ToString(), usersWhoResponded);
-                
-                // Remove message
-                if (_hydrationOptions.DeleteExpiredHydrationRequests)
+                try
                 {
-                    await hydrateMessage.DeleteAsync();   
+                    _logger.LogDebug("Requested by [{user}]", ctx.User);
+                
+                    // Send hydration message
+                    var hydrateMessage = await ctx.RespondAsync("Its time to hydrate! Drink some water and then click the reaction below.");
+            
+                    // Attach water emoji
+                    var waterEmoji = DiscordEmoji.FromName(ctx.Client, _hydrationOptions.WaterEmojiName);
+                    await hydrateMessage.CreateReactionAsync(waterEmoji);
+
+                    // Wait for responses
+                    var usersWhoResponded = (await hydrateMessage.CollectReactionsAsync(_hydrationOptions.HydrateRequestExpiresAfter))
+                        .Where(reaction => reaction.Emoji.Equals(waterEmoji))
+                        .SelectMany(reaction => reaction.Users)
+                        .Where(user => !user.Equals(ctx.Client.CurrentUser))
+                        .ToList();
+
+                    // Debug log responding users
+                    _logger.LogDebug("{count} users responded: [{users}]", usersWhoResponded.Count.ToString(), usersWhoResponded);
+                
+                    // Remove message
+                    if (_hydrationOptions.DeleteExpiredHydrationRequests)
+                    {
+                        await hydrateMessage.DeleteAsync();   
+                    }
+            
+                    // Award hydration points
+                    foreach (var user in usersWhoResponded)
+                    {
+                        await _hydrationLeaderboard.AwardPoints(user);   
+                    }
                 }
-            
-                // Award hydration points
-                foreach (var user in usersWhoResponded)
+                catch (Exception ex)
                 {
-                    await _hydrationLeaderboard.AwardPoints(user.Id);   
+                    _logger.LogError(ex, "Uncaught exception");
                 }
             }
         }

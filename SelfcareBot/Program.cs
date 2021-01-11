@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SelfcareBot.Config;
@@ -15,12 +17,14 @@ namespace SelfcareBot
         {
             // Create environment
             using var host = CreateHost(args);
-            
-            // Start host
-            await host.StartAsync();
 
-            // Wait for graceful shutdown
-            await host.WaitForShutdownAsync();
+/*
+            var db = host.Services.CreateScope().ServiceProvider.GetRequiredService<ISelfcareDbContext>();
+            await db.MigrateAsync();
+            Console.WriteLine(await db.KnownUsers.ToListAsync());*/
+            
+            // Run application
+            await host.RunAsync();
         }
         
         private static IHost CreateHost(string[] args)
@@ -41,10 +45,10 @@ namespace SelfcareBot
                     
                     // Inject database
                     services.AddDbContext<SelfcareDbContext>();
-                    services.AddScoped<ISelfcareDbContext>(provider => provider.GetService<SelfcareDbContext>() ?? throw new InvalidOperationException("Required service SelfcareContext is not registered for DI."));
+                    services.AddScoped<ISelfcareDbContext>(provider => provider.GetRequiredService<SelfcareDbContext>());
                     
                     // Inject services
-                    services.AddSingleton<IHydrationLeaderboard, HydrationLeaderboard>();
+                    services.AddScoped<IHydrationLeaderboard, HydrationLeaderboard>();
                     
                     // Inject main app logic
                     services.AddScoped<SelfcareBotMain>();

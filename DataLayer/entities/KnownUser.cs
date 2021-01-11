@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -21,12 +20,6 @@ namespace SelfcareBot.DataLayer.entities
         [Required]
         [Column(TypeName = "text")]
         public string Discriminator { get; set; }
-        
-        [Required]
-        public DateTime FirstSeen { get; set; }
-        
-        [Required]
-        public DateTime LastSeen { get; set; }
 
         [AllowNull]
         public virtual ICollection<UserScore> UserScores { get; set; }
