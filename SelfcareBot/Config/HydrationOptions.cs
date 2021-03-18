@@ -5,18 +5,14 @@ namespace SelfcareBot.Config
 {
     public class HydrationOptions
     {
-        [Required]
-        [Range(1, int.MaxValue)]
-        public int LeaderboardSize { get; set; } = 3;
+        [Required] [Range(1, int.MaxValue)] public int LeaderboardSize { get; init; } = 3;
 
         [Required]
         [RegularExpression(@"^:[\w\d]+:$")]
-        public string WaterEmojiName { get; set; } = ":droplet:";
+        public string WaterEmojiName { get; init; } = ":droplet:";
 
-        [Required]
-        public TimeSpan HydrateRequestExpiresAfter { get; set; } = new(0, 5, 0);
+        [Required] public TimeSpan HydrateRequestExpiresAfter { get; init; } = new(0, 5, 0);
 
-        [Required]
-        public bool DeleteExpiredHydrationRequests { get; set; } = true;
+        [Required] public bool DeleteExpiredHydrationRequests { get; init; } = true;
     }
 }

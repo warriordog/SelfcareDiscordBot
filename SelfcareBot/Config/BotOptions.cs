@@ -6,11 +6,8 @@ namespace SelfcareBot.Config
 {
     public class BotOptions
     {
-        [Required]
-        public IList<string> CommandPrefixes { get; set; } = new List<string>();
+        [Required] public IList<string> CommandPrefixes { get; init; } = new List<string>();
 
-        [Required]
-        [AllowNull]
-        public string DiscordToken { get; set; }
+        [Required] [AllowNull] public string DiscordToken { get; init; }
     }
 }
